@@ -3,14 +3,14 @@ from models.gasto import Gasto
 from models.configuracao import Configuracao
 
 class AppState:
-    _instace = None
+    _instance = None
 
     def __new__(cls):
-        # O AppState também é um Singleton mas com um  Observer
-        if cls._instace is None:
-            cls._instace = super(AppState, cls).__new__(cls)
-            cls._instace._inicializado = False
-        return cls._instace
+        # O AppState também é um Singleton mas com um Observer
+        if cls._instance is None:
+            cls._instance = super(AppState, cls).__new__(cls)
+            cls._instance._inicializado = False
+        return cls._instance
 
     def __init__(self):
         if not self._inicializado:
@@ -20,9 +20,7 @@ class AppState:
             self.config: Configuracao = None
 
             self._listeners = []
-            self._incializado = True
-
-    #Padrão Observer
+            self._inicializado = True
 
     def add_listener(self, listener_callback):
         """Sintoniza uma tela para ouvir as atualizações de estado"""
@@ -30,8 +28,9 @@ class AppState:
             self._listeners.append(listener_callback)
 
     def remove_listener(self, listener_callback):
-        """Remote a tela dos ouvintes"""
-        if listener_callback not in self._listeners:
+        """Remove a tela dos ouvintes"""
+        # Correção: Agora verifica se está na lista antes de remover
+        if listener_callback in self._listeners:
             self._listeners.remove(listener_callback)
 
     def notificar_listeners(self):
@@ -45,14 +44,14 @@ class AppState:
         self.config = self.db_manager.obter_configuracao()
         self.notificar_listeners()
 
-    def adicionar_gastos(self, gasto: Gasto):
+    def adicionar_gasto(self, gasto: Gasto):
         """Salva no banco, busca a lista atualizada e avisa as telas"""
         self.db_manager.inserir_gasto(gasto)
         self.fetch_dados()
 
     def remover_gasto(self, id_gasto: int):
         """Remove do banco, busca a lista atualizada e avisa as telas"""
-        self.db_manager.inserir_gasto(id_gasto)
+        self.db_manager.excluir_gasto(id_gasto)
         self.fetch_dados()
 
     def salvar_configuracao(self, nova_config: Configuracao):

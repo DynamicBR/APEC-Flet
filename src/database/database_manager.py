@@ -55,7 +55,7 @@ class DatabaseManager:
     def obter_configuracao(self):
         """Retorna a configuração do usuário ou cria um padrão se não existir"""
         config, created = Configuracao.get_or_create(id=1,
-                                                     default={'salario': 0.0, 'frequencia': 1, 'periodo': 'Mensal'})
+                                                     defaults={'salario': 0.0, 'frequencia': 1, 'periodo': 'Mensal'})
         return config
 
     def salvar_configuracoes(self, config: Configuracao):
