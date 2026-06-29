@@ -5,6 +5,7 @@ from peewee import SqliteDatabase
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
+from state.app_state import AppState
 from models import db
 from models.configuracao import Configuracao
 from models.gasto import Gasto
@@ -25,3 +26,13 @@ def db_temporario():
 
     test_db.drop_tables([Gasto, Configuracao])
     test_db.close()
+
+@pytest.fixture(autouse=True)
+def reset_singleton():
+    """
+    Limpa a instância do Singleton antes e depois de cada teste.
+    Garante que um teste não influencie o resultado do outro.
+    """
+    AppState._instance = None
+    yield
+    AppState._instance = None

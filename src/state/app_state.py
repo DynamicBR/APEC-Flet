@@ -56,5 +56,5 @@ class AppState:
 
     def salvar_configuracao(self, nova_config: Configuracao):
         """Atualiza as configurações no banco e avisa as telas"""
-        self.db_manager.salvar_configuracao(nova_config)
+        self.db_manager.salvar_configuracoes(nova_config)
         self.fetch_dados()

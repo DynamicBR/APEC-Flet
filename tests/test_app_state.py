@@ -2,16 +2,6 @@ import pytest
 from state.app_state import AppState
 from models.gasto import Gasto
 
-@pytest.fixture(autouse=True)
-def reset_singleton():
-    """
-    Limpa a instância do Singleton antes e depois de cada teste.
-    Garante que um teste não influencie o resultado do outro.
-    """
-    AppState._instance = None
-    yield
-    AppState._instance = None
-
 def test_app_state_eh_singleton(db_temporario):
      """Garante que múltiplas chamadas ao AppState retornam a mesma memória"""
      estado1 = AppState()
