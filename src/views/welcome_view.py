@@ -30,7 +30,7 @@ def WelcomeView():
                         ft.ElevatedButton(
                             "Começar",
                             icon=ft.Icons.ARROW_FORWARD,
-                            on_click=lambda e: print("O Flet novo está funcionando!")
+                            on_click=lambda e: ft.context.page.navigate("/home")
                         )
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
