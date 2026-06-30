@@ -1,25 +1,19 @@
 import flet as ft
-
+from router import AppRouter
+from state.app_state import AppState
 
 def main(page: ft.Page):
-    counter = ft.Text("0", size=50, data=0)
+    # 1. Configurações da Janela
+    page.title = "APEC - Controle de Gastos"
+    page.theme_mode = ft.ThemeMode.DARK
 
-    def increment_click(e):
-        counter.data += 1
-        counter.value = str(counter.data)
+    page.window.width = 400
+    page.window.height = 800
 
-    page.floating_action_button = ft.FloatingActionButton(
-        icon=ft.Icons.ADD, on_click=increment_click
-    )
-    page.add(
-        ft.SafeArea(
-            expand=True,
-            content=ft.Container(
-                content=counter,
-                alignment=ft.Alignment.CENTER,
-            ),
-        )
-    )
+    app_state = AppState()
 
+    #Renderiza toda a aplicação passando a bola para o novo AppRouter!
+    page.render_views(AppRouter)
 
-ft.run(main)
+if __name__ == '__main__':
+    ft.run(main)
