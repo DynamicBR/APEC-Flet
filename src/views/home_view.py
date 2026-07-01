@@ -1,7 +1,33 @@
 import flet as ft
 from viewmodels.home_viewmodel import HomeViewModel
 from components.custom_navigation_bar import CustomNavigationBar
-from state.app_state import AppState
+from models.gasto import Gasto
+
+
+@ft.component
+def GastoItem(gasto: Gasto, on_delete):
+    """Componente visual de um único gasto."""
+
+    def delete_clicked(e):
+        on_delete(gasto)
+
+    return ft.ListTile(
+        leading=ft.Icon(ft.Icons.MONETIZATION_ON, color=ft.Colors.RED_400),
+        title=ft.Text(gasto.descricao, weight=ft.FontWeight.BOLD),
+        subtitle=ft.Text(f"{gasto.categoria} • {gasto.data.strftime('%d/%m/%Y')}"),
+        trailing=ft.Row(
+            controls=[
+                ft.Text(f"R$ {gasto.valor:.2f}", color=ft.Colors.RED_400, size=16),
+                ft.IconButton(
+                    icon=ft.Icons.DELETE_OUTLINE,
+                    icon_color=ft.Colors.RED_300,
+                    tooltip="Excluir gasto",
+                    on_click=delete_clicked,
+                )
+            ],
+            tight=True
+        )
+    )
 
 
 @ft.component
@@ -10,70 +36,25 @@ def HomeView():
     Componente da tela principal (Dashboard) do usuário.
     """
     vm = HomeViewModel()
-    app_state = AppState()
 
-    _, set_atualizar = ft.use_state(False)
+    gastos_lista, set_gastos_lista = ft.use_state(vm.gastos)
+    saldo, set_saldo = ft.use_state(vm.saldo_total)
 
-    def ao_receber_notificacao():
-        set_atualizar(lambda x: not x)
+    def handle_delete(gasto: Gasto):
+        vm.handle_excluir(gasto.id)
 
-    def gerenciar_inscricao():
-        app_state.add_listener(ao_receber_notificacao)
-        return lambda: app_state.remove_listener(ao_receber_notificacao)
+        set_gastos_lista(vm.gastos)
+        set_saldo(vm.saldo_total)
 
-    ft.use_effect(gerenciar_inscricao, [])
-
-    saldo = vm.saldo_total
-    gastos = vm.gastos
-
-    def confirmar_exclusao(gasto_id, descricao):
-        def deletar(e):
-            vm.handle_excluir(gasto_id)
-
-            dlg.open = False
-            ft.context.page.overlay.append(
-                ft.SnackBar(ft.Text(f"'{descricao}' excluído com sucesso!"), open=True, bgcolor=ft.Colors.GREEN_700)
-            )
-            ft.context.page.update()
-
-        def fechar(e):
-            dlg.open = False
-            ft.context.page.update()
-
-        dlg = ft.AlertDialog(
-            title=ft.Text("Confirmar Exclusão"),
-            content=ft.Text(f"Deseja realmente excluir o gasto '{descricao}'?"),
-            actions=[
-                ft.TextButton("Cancelar", on_click=fechar),
-                ft.TextButton("Excluir", on_click=deletar, style=ft.ButtonStyle(color=ft.Colors.RED_400)),
-            ],
-            actions_alignment=ft.MainAxisAlignment.END,
+        ft.context.page.overlay.append(
+            ft.SnackBar(ft.Text(f"'{gasto.descricao}' excluído!"), open=True, bgcolor=ft.Colors.GREEN_700)
         )
-
-        ft.context.page.dialog = dlg
-        dlg.open = True
         ft.context.page.update()
 
     lista_gastos_controles = []
-    for gasto in gastos:
+    for gasto in gastos_lista:
         lista_gastos_controles.append(
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.MONETIZATION_ON, color=ft.Colors.RED_400),
-                title=ft.Text(gasto.descricao, weight=ft.FontWeight.BOLD),
-                subtitle=ft.Text(f"{gasto.categoria} • {gasto.data.strftime('%d/%m/%Y')}"),
-                trailing=ft.Row(
-                    controls=[
-                        ft.Text(f"R$ {gasto.valor:.2f}", color=ft.Colors.RED_400, size=16),
-                        ft.IconButton(
-                            icon=ft.Icons.DELETE_OUTLINED,
-                            icon_color=ft.Colors.RED_300,
-                            tooltip="Excluir gasto",
-                            on_click=lambda e, g_id=gasto.id, desc=gasto.descricao: confirmar_exclusao(g_id, desc)
-                        )
-                    ],
-                    tight=True
-                )
-            )
+            GastoItem(gasto=gasto, on_delete=handle_delete)
         )
 
     if not lista_gastos_controles:
