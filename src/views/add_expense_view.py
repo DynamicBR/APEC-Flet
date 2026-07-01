@@ -5,8 +5,8 @@ from models.gasto import Gasto
 @ft.component
 def AddExpenseView():
     """
-        Componente da tela com o formulário para adicionar um novo gasto.
-        """
+    Componente da tela com o formulário para adicionar um novo gasto.
+    """
     descricao_ref = ft.Ref[ft.TextField]()
     valor_ref = ft.Ref[ft.TextField]()
     categoria_ref = ft.Ref[ft.Dropdown]()
@@ -52,53 +52,55 @@ def AddExpenseView():
         ),
         controls=[
             ft.SafeArea(
-                ft.Column(
-                    controls=[
-                        ft.TextField(
-                            ref=descricao_ref,
-                            label="Descrição",
-                            hint_text="Ex: Pizza com amigos",
-                            autofocus=True
-                        ),
+                ft.Container(
+                    padding=20,
+                    content=ft.Column(
+                        controls=[
+                            ft.TextField(
+                                ref=descricao_ref,
+                                label="Descrição",
+                                hint_text="Ex: Pizza com amigos",
+                                autofocus=True
+                            ),
 
-                        ft.TextField(
-                            ref=valor_ref,
-                            label="Valor (R$)",
-                            hint_text="0.00",
-                            keyboard_type=ft.KeyboardType.NUMBER
-                        ),
+                            ft.TextField(
+                                ref=valor_ref,
+                                label="Valor (R$)",
+                                hint_text="0.00",
+                                keyboard_type=ft.KeyboardType.NUMBER
+                            ),
 
-                        ft.Dropdown(
-                            ref=categoria_ref,
-                            label="Categoria",
-                            options=[
-                                ft.dropdown.Option("Alimentação"),
-                                ft.dropdown.Option("Transporte"),
-                                ft.dropdown.Option("Contas"),
-                                ft.dropdown.Option("Lazer"),
-                                ft.dropdown.Option("Saúde"),
-                                ft.dropdown.Option("Educação"),
-                                ft.dropdown.Option("Outros"),
-                            ]
-                        ),
+                            ft.Dropdown(
+                                ref=categoria_ref,
+                                label="Categoria",
+                                options=[
+                                    ft.dropdown.Option("Alimentação"),
+                                    ft.dropdown.Option("Transporte"),
+                                    ft.dropdown.Option("Contas"),
+                                    ft.dropdown.Option("Lazer"),
+                                    ft.dropdown.Option("Saúde"),
+                                    ft.dropdown.Option("Educação"),
+                                    ft.dropdown.Option("Outros"),
+                                ]
+                            ),
 
-                        ft.Container(height=30),
+                            ft.Container(height=30),
 
-                        ft.Row(
-                            controls=[
-                                ft.OutlinedButton("Cancelar", on_click=cancelar, expand=True),
-                                ft.Button(
-                                    "Salvar",
-                                    on_click=salvar_gasto,
-                                    expand=True,
-                                    bgcolor=ft.Colors.BLUE_600,
-                                    color=ft.Colors.WHITE
-                                ),
-                            ],
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
-                        )
-                    ],
-                    padding=20
+                            ft.Row(
+                                controls=[
+                                    ft.OutlinedButton("Cancelar", on_click=cancelar, expand=True),
+                                    ft.Button(
+                                        "Salvar",
+                                        on_click=salvar_gasto,
+                                        expand=True,
+                                        bgcolor=ft.Colors.BLUE_600,
+                                        color=ft.Colors.WHITE
+                                    ),
+                                ],
+                                alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                            )
+                        ]
+                    )
                 )
             )
         ]

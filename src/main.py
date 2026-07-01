@@ -12,6 +12,8 @@ def main(page: ft.Page):
 
     app_state = AppState()
 
+    app_state.fetch_dados()
+
     #Renderiza toda a aplicação passando a bola para o novo AppRouter!
     page.render_views(AppRouter)
 

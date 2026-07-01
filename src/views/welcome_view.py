@@ -1,9 +1,10 @@
 import flet as ft
 
+
 @ft.component
 def WelcomeView():
     """
-    Componente da tela de boas-vindas.
+    Componente da tela de boas-vindas moderno e sem avisos de depreciação.
     """
     return ft.View(
         route="/welcome",
@@ -27,7 +28,8 @@ def WelcomeView():
                             color=ft.Colors.WHITE70
                         ),
                         ft.Container(height=20),
-                        ft.ElevatedButton(
+
+                        ft.Button(
                             "Começar",
                             icon=ft.Icons.ARROW_FORWARD,
                             on_click=lambda e: ft.context.page.navigate("/home")
