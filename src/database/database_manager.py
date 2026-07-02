@@ -58,6 +58,6 @@ class DatabaseManager:
                                                      defaults={'salario': 0.0, 'frequencia': 1, 'periodo': 'Mensal'})
         return config
 
-    def salvar_configuracoes(self, config: Configuracao):
+    def salvar_configuracao(self, config: Configuracao):
         """Atualiza a configuração salva"""
         config.save()

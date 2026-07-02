@@ -2,12 +2,10 @@ import flet as ft
 from viewmodels.home_viewmodel import HomeViewModel
 from components.custom_navigation_bar import CustomNavigationBar
 from models.gasto import Gasto
-
+from state.app_state import AppState
 
 @ft.component
 def GastoItem(gasto: Gasto, on_delete):
-    """Componente visual de um único gasto."""
-
     def delete_clicked(e):
         on_delete(gasto)
 
@@ -29,23 +27,27 @@ def GastoItem(gasto: Gasto, on_delete):
         )
     )
 
-
 @ft.component
 def HomeView():
-    """
-    Componente da tela principal (Dashboard) do usuário.
-    """
+    app_state = AppState()
     vm = HomeViewModel()
 
-    gastos_lista, set_gastos_lista = ft.use_state(vm.gastos)
-    saldo, set_saldo = ft.use_state(vm.saldo_total)
+    _, set_atualizar = ft.use_state(False)
+
+    def ao_mudar_estado_global():
+        set_atualizar(lambda x: not x)
+
+    def gerenciar_inscricao():
+        app_state.add_listener(ao_mudar_estado_global)
+        return lambda: app_state.remove_listener(ao_mudar_estado_global)
+
+    ft.use_effect(gerenciar_inscricao, [])
+
+    saldo = vm.saldo_total
+    gastos_lista = vm.gastos
 
     def handle_delete(gasto: Gasto):
         vm.handle_excluir(gasto.id)
-
-        set_gastos_lista(vm.gastos)
-        set_saldo(vm.saldo_total)
-
         ft.context.page.overlay.append(
             ft.SnackBar(ft.Text(f"'{gasto.descricao}' excluído!"), open=True, bgcolor=ft.Colors.GREEN_700)
         )
