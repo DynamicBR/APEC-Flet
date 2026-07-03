@@ -11,7 +11,7 @@ dependencies = [
     "flet>=0.85.3",
     "peewee>=4.1.0",
     "pendulum>=3.2.0",
-    "ruff>=0.15.20",
+
 ]
 
 [dependency-groups]
@@ -19,6 +19,7 @@ dev = [
     "flet-cli>=0.85.3",
     "flet-desktop>=0.85.3",
     "flet-web>=0.85.3",
+    "ruff>=0.15.20",
 ]
 
 [tool.flet]
