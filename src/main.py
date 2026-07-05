@@ -1,4 +1,5 @@
 import flet as ft
+
 from router import AppRouter
 from state.app_state import AppState
 
@@ -6,6 +7,13 @@ def main(page: ft.Page):
     # 1. Configurações da Janela
     page.title = "APEC - Controle de Gastos"
     page.theme_mode = ft.ThemeMode.DARK
+
+    page.theme = ft.Theme(page_transitions=ft.PageTransitionsTheme(
+        android=ft.PageTransitionTheme.NONE,
+        ios=ft.PageTransitionTheme.NONE,
+        windows=ft.PageTransitionTheme.NONE,
+        macos=ft.PageTransitionTheme.NONE,
+    ))
 
     page.window.width = 400
     page.window.height = 800

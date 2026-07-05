@@ -2,17 +2,10 @@ import flet as ft
 from viewmodels.estatisticas_viewmodel import EstatisticasViewModel
 from components.custom_navigation_bar import CustomNavigationBar
 
-
 @ft.component
 def StatsView():
-    """
-    Componente da tela de estatísticas reativa com suporte a filtros de período.
-    """
     vm = EstatisticasViewModel()
-
     filtro, set_filtro = ft.use_state("Todos")
-
-    # Aplica o filtro selecionado antes de gerar a interface
     vm.carregar_dados(filtro_strategy=filtro)
 
     categorias_dict = vm.categorias
@@ -40,7 +33,7 @@ def StatsView():
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                         ),
-                        ft.ProgressBar(value=porcentagem, color=cor, bgcolor=ft.Colors.WHITE12)
+                        ft.ProgressBar(value=porcentagem, color=cor, bgcolor=ft.Colors.WHITE_12)
                     ]
                 )
             )
@@ -48,7 +41,7 @@ def StatsView():
     else:
         barras_categoria.append(
             ft.Container(
-                content=ft.Text("Nenhum gasto neste período.", color=ft.Colors.WHITE54, italic=True),
+                content=ft.Text("Nenhum gasto neste período.", color=ft.Colors.WHITE_54, italic=True),
                 padding=10,
                 alignment=ft.Alignment.CENTER
             )
@@ -68,64 +61,62 @@ def StatsView():
     if not controles_top5:
         controles_top5.append(ft.Text("Nenhum gasto registrado.", color=ft.Colors.WHITE54))
 
+    def handle_swipe(e):
+        if e.primary_velocity > 300:
+            ft.context.page.navigate("/home")
+        elif e.primary_velocity < -300:
+            ft.context.page.navigate("/settings")
+
     return ft.View(
         route="/stats",
         navigation_bar=CustomNavigationBar(),
         controls=[
-            ft.SafeArea(
-                ft.Container(
-                    padding=20,
-                    expand=True,
-                    content=ft.Column(
-                        controls=[
-                            ft.Text("Estatísticas", size=28, weight=ft.FontWeight.BOLD),
-
-                            # CORREÇÃO AQUI: Trocamos on_change por on_select
-                            ft.Dropdown(
-                                label="Filtrar Período",
-                                value=filtro,
-                                options=[
-                                    ft.dropdown.Option("Todos"),
-                                    ft.dropdown.Option("Este Mês"),
-                                    ft.dropdown.Option("Esta Semana"),
-                                ],
-                                on_select=lambda e: set_filtro(e.control.value)
-                            ),
-
-                            ft.Container(height=10),
-
-                            # Resumo Total
-                            ft.Container(
-                                content=ft.Column([
-                                    ft.Text("Total Gasto no Período", size=14, color=ft.Colors.WHITE70),
-                                    ft.Text(f"R$ {total_gasto:.2f}", size=32, weight=ft.FontWeight.BOLD,
-                                            color=ft.Colors.RED_400),
-                                ]),
-                                padding=20,
-                                bgcolor=ft.Colors.BLUE_GREY_900,
-                                border_radius=10,
-                                width=float("inf")
-                            ),
-
-                            ft.Container(height=15),
-
-                            ft.Text("Gastos por Categoria", size=18, weight=ft.FontWeight.BOLD),
-
-                            ft.Container(
-                                content=ft.Column(controls=barras_categoria),
-                                padding=10
-                            ),
-
-                            ft.Container(height=15),
-
-                            ft.Text("Maiores Gastos", size=18, weight=ft.FontWeight.BOLD),
-                            ft.Column(
-                                controls=controles_top5,
-                                scroll=ft.ScrollMode.AUTO,
-                                expand=True
-                            )
-                        ],
-                        expand=True
+            ft.GestureDetector(
+                on_horizontal_drag_end=handle_swipe,
+                expand=True,
+                content=ft.SafeArea(
+                    ft.Container(
+                        padding=20,
+                        expand=True,
+                        content=ft.Column(
+                            scroll=ft.ScrollMode.AUTO,
+                            controls=[
+                                ft.Text("Estatísticas", size=28, weight=ft.FontWeight.BOLD),
+                                ft.Dropdown(
+                                    label="Filtrar Período",
+                                    value=filtro,
+                                    options=[
+                                        ft.dropdown.Option("Todos"),
+                                        ft.dropdown.Option("Este Mês"),
+                                        ft.dropdown.Option("Esta Semana"),
+                                    ],
+                                    on_select=lambda e: set_filtro(e.control.value)
+                                ),
+                                ft.Container(height=10),
+                                ft.Container(
+                                    content=ft.Column([
+                                        ft.Text("Total Gasto no Período", size=14, color=ft.Colors.WHITE_70),
+                                        ft.Text(f"R$ {total_gasto:.2f}", size=32, weight=ft.FontWeight.BOLD,
+                                                color=ft.Colors.RED_400),
+                                    ]),
+                                    padding=20,
+                                    bgcolor=ft.Colors.BLUE_GREY_900,
+                                    border_radius=10,
+                                    width=float("inf")
+                                ),
+                                ft.Container(height=15),
+                                ft.Text("Gastos por Categoria", size=18, weight=ft.FontWeight.BOLD),
+                                ft.Container(
+                                    content=ft.Column(controls=barras_categoria),
+                                    padding=10
+                                ),
+                                ft.Container(height=15),
+                                ft.Text("Maiores Gastos", size=18, weight=ft.FontWeight.BOLD),
+                                ft.Column(
+                                    controls=controles_top5
+                                )
+                            ]
+                        )
                     )
                 )
             )

@@ -12,7 +12,7 @@ def CustomNavigationBar():
     selected_index = 0
     if ft.is_route_active("/stats"):
         selected_index = 1
-    elif ft.is_route_active("/settigns"):
+    elif ft.is_route_active("/settings"):
         selected_index = 2
 
     def handle_nav_change(e):

@@ -71,42 +71,41 @@ def HomeView():
     return ft.View(
         route="/home",
         navigation_bar=CustomNavigationBar(),
-
         floating_action_button=ft.FloatingActionButton(
             icon=ft.Icons.ADD,
             bgcolor=ft.Colors.BLUE_500,
             on_click=lambda e: ft.context.page.navigate("/add_expense")
         ),
-
         controls=[
-            ft.SafeArea(
-                ft.Container(
-                    padding=20,
-                    expand=True,
-                    content=ft.Column(
-                        controls=[
-                            ft.Container(
-                                content=ft.Column([
-                                    ft.Text("Meu Saldo", size=16, color=ft.Colors.WHITE70),
-                                    ft.Text(f"R$ {saldo:.2f}", size=40, weight=ft.FontWeight.BOLD),
-                                ]),
-                                padding=20,
-                                bgcolor=ft.Colors.BLUE_GREY_900,
-                                border_radius=10,
-                                width=float("inf")
-                            ),
-
-                            ft.Container(height=20),
-
-                            ft.Text("Gastos Recentes", size=20, weight=ft.FontWeight.BOLD),
-
-                            ft.Column(
-                                controls=lista_gastos_controles,
-                                scroll=ft.ScrollMode.AUTO,
-                                expand=True
-                            )
-                        ],
-                        expand=True
+            ft.GestureDetector(
+                on_horizontal_drag_end=lambda e: ft.context.page.navigate("/stats") if e.primary_velocity < -300 else None,
+                expand=True,
+                content=ft.SafeArea(
+                    ft.Container(
+                        padding=20,
+                        expand=True,
+                        content=ft.Column(
+                            controls=[
+                                ft.Container(
+                                    content=ft.Column([
+                                        ft.Text("Meu Saldo", size=16, color=ft.Colors.WHITE70),
+                                        ft.Text(f"R$ {saldo:.2f}", size=40, weight=ft.FontWeight.BOLD),
+                                    ]),
+                                    padding=20,
+                                    bgcolor=ft.Colors.BLUE_GREY_900,
+                                    border_radius=10,
+                                    width=float("inf")
+                                ),
+                                ft.Container(height=20),
+                                ft.Text("Gastos Recentes", size=20, weight=ft.FontWeight.BOLD),
+                                ft.Column(
+                                    controls=lista_gastos_controles,
+                                    scroll=ft.ScrollMode.AUTO,
+                                    expand=True
+                                )
+                            ],
+                            expand=True
+                        )
                     )
                 )
             )
